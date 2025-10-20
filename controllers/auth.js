@@ -7,6 +7,8 @@ const { v4: uuidv4 } = require("uuid");
 const User = require("../models/Users.js");
 
 const signUp = async (req, res) => {
+  console.log("Received body:", req.body);
+
   try {
     // Check if the username is already taken
     const userInDatabase = await User.findOne({ username: req.body.username });
@@ -51,14 +53,16 @@ const signIn = async (req, res) => {
     const claims = { username: userInDatabase.username };
 
     const access = jwt.sign(claims, process.env.ACCESS_SECRET, {
-      expiresIn: "15m",
+      expiresIn: "59m",
       jwtid: uuidv4(),
     });
+    console.log("1111");
 
     const refresh = jwt.sign(claims, process.env.REFRESH_SECRET, {
       expiresIn: "30d",
       jwtid: uuidv4(),
     });
+    console.log("2222");
 
     res.json({ access, refresh });
   } catch (error) {
