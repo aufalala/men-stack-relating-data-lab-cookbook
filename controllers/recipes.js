@@ -40,15 +40,15 @@ const createRecipes = async (req, res) => {
 };
 
 const getRecipeById = async (req, res) => {
-  const userId = req.decoded._id;
-
   const recipeId = req.params.recipeId
   if (!mongoose.Types.ObjectId.isValid(recipeId)) {
     return res.status(400).json({ error: 'Invalid recipe ID' });
   }
  
   try {
-    const recipe = await Recipe.findOne({ _id: recipeId, owner: userId });
+    const recipe = await Recipe.findOne({ _id: recipeId })
+      .populate('owner', 'username')
+      .populate('ingredients', 'name');
 
     if (!recipe) {
       return res.status(404).json({ error: 'Recipe not found or not authorized' });
